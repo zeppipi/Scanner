@@ -35,7 +35,7 @@ public class PointSpawnners : MonoBehaviour
 
         // if (pointPrefab == null)
         // Fix this mess bruh lmao
-        List<int[]> points = new List<int[]>();
+        int[] point;
         if(Input.GetMouseButtonDown(0))
         {
             float x = player.transform.position.x;
@@ -43,20 +43,11 @@ public class PointSpawnners : MonoBehaviour
             int[] playerLocation = WorldToMapPoint(x, y);
             Debug.Log("Player position: " + playerLocation[0] + ", " + playerLocation[1]);
             
-            points = SpawnPoint(distance, playerLocation[0], playerLocation[1]);
+            point = SpawnPoint(distance, playerLocation[0], playerLocation[1]);
 
-            foreach(int[] point in points)
-            {
-                Vector3 worldPoint = MapToWorldPoint(point[0], point[1]);
-                Debug.Log("Point real position: " + worldPoint[0] + ", " + worldPoint[1]);
-                Debug.Log("Point position: " + point[0] + ", " + point[1]);
-            }
-        }
-
-        foreach(int[] point in points)
-        {
             Vector3 worldPoint = MapToWorldPoint(point[0], point[1]);
-            Debug.DrawLine(worldPoint, worldPoint + new Vector3(0.1f, 0.1f, 0), Color.green, 0.1f);
+            Debug.Log("Point real position: " + worldPoint[0] + ", " + worldPoint[1]);
+            Debug.Log("Point position: " + point[0] + ", " + point[1]);
         }
     }
 
@@ -86,14 +77,14 @@ public class PointSpawnners : MonoBehaviour
         return new Vector3(-generator.getMapWidth() / 2 + 0.5f + x, -generator.getMapHeight() / 2 + 0.5f + y, 0);
     }
 
-    //Note: this should've return int[2], but this returns the whole list for now for testing
-    List<int[]> SpawnPoint(int distance, int xPoint, int yPoint)
+    // This should be return a void I just realized
+    int[] SpawnPoint(int distance, int xPoint, int yPoint)
     {
         /*
             Respawns the point prefab at a new random location given a distance variable
 
             Note:
-            Nice one! last thing is to filter out all of the close ass positions
+            Make the point prefab and uncomment the instantiate
         */
 
         // Create variables
@@ -146,6 +137,25 @@ public class PointSpawnners : MonoBehaviour
             res.Add(new int[2] { currentTile[0], currentTile[1] });
         }
 
-        return res;
+        // Filter out all of the positions that are too close
+        List<int[]> resFiltered = new List<int[]>();
+        for (int index = 0; index < res.Count; index++)
+        {
+            Vector3 curPosition = MapToWorldPoint(res[index][0], res[index][1]);
+            float distBetweenPlayer = Vector3.Distance(player.transform.position, curPosition);
+
+            if (distBetweenPlayer > this.distance)
+            {
+                resFiltered.Add(res[index]);
+            }
+        }
+
+        // Pick one at random
+        int[] resFinal = resFiltered[Random.Range(0, resFiltered.Count)];
+        Vector3 finalPosition = MapToWorldPoint(resFinal[0], resFinal[1]);
+        // Instantiate(pointPrefab, finalPosition, Quaternion.identity);
+
+        // Returning for debug
+        return resFinal;
     }
 }
