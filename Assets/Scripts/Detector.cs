@@ -8,7 +8,6 @@ public class Detector : MonoBehaviour
     [SerializeField] private int raycastDegree;
     [SerializeField] private float lineWidths = 1;
     [SerializeField] private Material lineMaterial;
-    [SerializeField] private float detectorRadius = 0.3f;
     
     private int degreeStep = 1;
     private Collider2D[] detectedItems;
@@ -18,6 +17,10 @@ public class Detector : MonoBehaviour
     private List<GameObject> outerLineRenderer = new List<GameObject>();
     private List<GameObject> middleLineRenderer = new List<GameObject>();
     private List<GameObject> innerLineRenderer = new List<GameObject>();
+
+    private float outerRadius;
+    private float middleRadius;
+    private float innerRadius;
     
     // Start is called before the first frame update
     void Awake()
@@ -25,14 +28,19 @@ public class Detector : MonoBehaviour
         // Get the degrees for each raycast
         degreeStep = 360 / raycastDegree;
 
+        // Calculate radiuses
+        outerRadius = detectRadius;
+        middleRadius = detectRadius / 1.5f;
+        innerRadius = detectRadius / 3;
+
         // Create lines
-        circlePoints = GetCirclePoints(raycastDegree, detectRadius);
+        circlePoints = GetCirclePoints(raycastDegree, outerRadius);
         outerLineRenderer = CreateLines(circlePoints);
 
-        circlePoints = GetCirclePoints(raycastDegree, detectRadius/1.5f);
+        circlePoints = GetCirclePoints(raycastDegree, middleRadius);
         middleLineRenderer = CreateLines(circlePoints, outerLineRenderer);
 
-        circlePoints = GetCirclePoints(raycastDegree, detectRadius/3);
+        circlePoints = GetCirclePoints(raycastDegree, innerRadius);
         innerLineRenderer = CreateLines(circlePoints, middleLineRenderer);
     }
 
@@ -40,12 +48,7 @@ public class Detector : MonoBehaviour
     void Update()
     {
         detectedItems = Physics2D.OverlapCircleAll(transform.position, detectRadius);
-
-        if (detectedItems.Length > 0)
-        {
-            DrawRaycastHit(); 
-        }
-
+        DrawRaycastHit(); 
     }
 
     void DrawRaycastHit()
@@ -58,7 +61,27 @@ public class Detector : MonoBehaviour
 
             if (hit.collider != null)
             {
-                Debug.DrawRay(transform.position, rayDirection, Color.red);
+                float hitAndPlayerDist = Vector2.Distance(hit.point, transform.position);
+                
+                // This is a mess
+                if(hitAndPlayerDist > outerRadius)
+                {
+                    outerLineRenderer[(int) angle / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
+                }
+                else if(hitAndPlayerDist > middleRadius)
+                {
+                    middleLineRenderer[(int) angle / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
+                }
+                else if(hitAndPlayerDist > innerRadius)
+                {
+                    innerLineRenderer[(int) angle / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
+                }
+            }
+            else
+            {
+                outerLineRenderer[(int) angle / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(false);
+                middleLineRenderer[(int) angle / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(false);
+                innerLineRenderer[(int) angle / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(false);
             }
 
         }
@@ -147,7 +170,6 @@ public class Detector : MonoBehaviour
             {
                 curObject.GetComponent<DetectCollider>().AddAgent(lineAgents[index - 1]);
             }
-            curObject.GetComponent<DetectCollider>().SetRadius(detectorRadius);
 
             res.Add(curObject);
         }

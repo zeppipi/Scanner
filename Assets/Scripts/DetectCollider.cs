@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DetectCollider : MonoBehaviour
 {
-    private CircleCollider2D collider;
     private LineRenderer lineRenderer;
     private bool remoteActivated = false;   // Line is being activated from another script
     private bool localActivated = false;    // Line is being activated from this script
@@ -15,31 +14,7 @@ public class DetectCollider : MonoBehaviour
     void Awake()
     {
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        
-        collider = this.gameObject.AddComponent<CircleCollider2D>();
-        collider.isTrigger = true;
-
         lineRenderer = this.gameObject.GetComponent<LineRenderer>();
-    }
-
-    void OnTriggerEnter2D(Collider2D other) 
-    {
-        localActivated = true;
-        
-        if (remoteAgent != null)
-        {
-            remoteAgent.GetComponent<DetectCollider>().SetActivation(true);
-        }   
-    }
-
-    void OnTriggerExit2D(Collider2D other) 
-    {
-        localActivated = false;
-
-        if (remoteAgent != null)
-        {
-            remoteAgent.GetComponent<DetectCollider>().SetActivation(false);
-        }  
     }
     
     // Update is called once per frame
@@ -53,6 +28,12 @@ public class DetectCollider : MonoBehaviour
         }
     }
 
+    public void SetLocalActivation(bool value)
+    {
+        // These names are getting confusing
+        localActivated = value;
+    }
+
     public void SetActivation(bool value)
     {
         remoteActivated = value;
@@ -61,10 +42,5 @@ public class DetectCollider : MonoBehaviour
     public void AddAgent(GameObject agent)
     {
         remoteAgent = agent;
-    }
-
-    public void SetRadius(float radius)
-    {
-        collider.radius = radius;
     }
 }

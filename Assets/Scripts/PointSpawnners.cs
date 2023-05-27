@@ -5,6 +5,7 @@ using UnityEngine;
 public class PointSpawnners : MonoBehaviour
 {
     private GameObject player;
+    private GameObject pointGameobject;
 
     private Generator generator;
     private int[,] map;
@@ -33,21 +34,18 @@ public class PointSpawnners : MonoBehaviour
             map = generator.getMap();
         }
 
-        // if (pointPrefab == null)
-        // Fix this mess bruh lmao
-        int[] point;
-        if(Input.GetMouseButtonDown(0))
+        // Spawn a new point prefab when there is none on the map
+        if (pointGameobject == null)
         {
-            float x = player.transform.position.x;
-            float y = player.transform.position.y;
-            int[] playerLocation = WorldToMapPoint(x, y);
-            Debug.Log("Player position: " + playerLocation[0] + ", " + playerLocation[1]);
+            int[] playerMapPos = WorldToMapPoint(player.transform.position.x, player.transform.position.y);
             
-            point = SpawnPoint(distance, playerLocation[0], playerLocation[1]);
-
-            Vector3 worldPoint = MapToWorldPoint(point[0], point[1]);
-            Debug.Log("Point real position: " + worldPoint[0] + ", " + worldPoint[1]);
-            Debug.Log("Point position: " + point[0] + ", " + point[1]);
+            // Only spawn when the player truly is not in the wall
+            if(map[playerMapPos[0], playerMapPos[1]] == 0)
+            {
+                // Spawn a new point prefab
+                int[] spawnPoint = SpawnPoint(distance, playerMapPos[0], playerMapPos[1]);
+                pointGameobject = Instantiate(pointPrefab, MapToWorldPoint(spawnPoint[0], spawnPoint[1]), Quaternion.identity);
+            }
         }
     }
 
@@ -82,12 +80,10 @@ public class PointSpawnners : MonoBehaviour
     {
         /*
             Respawns the point prefab at a new random location given a distance variable
-
-            Note:
-            Make the point prefab and uncomment the instantiate
         */
 
         // Create variables
+        List<int[]> resBackup = new List<int[]>();
         List<int[]> res = new List<int[]>();
         int[,] mapFlags = new int[generator.getMapWidth(), generator.getMapHeight()];
         int tileType = map[xPoint, yPoint];
@@ -123,7 +119,13 @@ public class PointSpawnners : MonoBehaviour
                         {
                             mapFlags[x, y] = 1;
                             bufferQueue.Enqueue(new int[2] { x, y });
-                            res.Add(new int[2] { x, y });
+                            resBackup.Add(new int[2] { x, y }); // Backup for when the algo can't find a valid position far enough
+
+                            // Check if the tile is far enough
+                            if(distance == 1)
+                            {
+                                res.Add(new int[2] { x, y });
+                            }
                         }
                     }
                 }
@@ -137,23 +139,16 @@ public class PointSpawnners : MonoBehaviour
             res.Add(new int[2] { currentTile[0], currentTile[1] });
         }
 
-        // Filter out all of the positions that are too close
-        List<int[]> resFiltered = new List<int[]>();
-        for (int index = 0; index < res.Count; index++)
-        {
-            Vector3 curPosition = MapToWorldPoint(res[index][0], res[index][1]);
-            float distBetweenPlayer = Vector3.Distance(player.transform.position, curPosition);
-
-            if (distBetweenPlayer > this.distance)
-            {
-                resFiltered.Add(res[index]);
-            }
-        }
-
         // Pick one at random
-        int[] resFinal = resFiltered[Random.Range(0, resFiltered.Count)];
-        Vector3 finalPosition = MapToWorldPoint(resFinal[0], resFinal[1]);
-        // Instantiate(pointPrefab, finalPosition, Quaternion.identity);
+        int[] resFinal;
+        if (res.Count == 0)
+        {
+            resFinal = resBackup[Random.Range(0, resBackup.Count)];
+        }
+        else
+        {
+            resFinal = res[Random.Range(0, res.Count)];
+        }
 
         // Returning for debug
         return resFinal;

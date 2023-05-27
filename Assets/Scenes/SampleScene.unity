@@ -285,8 +285,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eaec0b0395c75f46bcb4271993544c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointPrefab: {fileID: 0}
-  distance: 4
+  pointPrefab: {fileID: 4688182735902419726, guid: 727e75433f8f0234290ebfd89b9ff30f, type: 3}
+  distance: 25
   caveGenerator: {fileID: 837068015}
 --- !u!1001 &3553061084272267995
 PrefabInstance:
