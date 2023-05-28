@@ -6,7 +6,8 @@ public class Controller : MonoBehaviour
 {
     [SerializeField] private float turnSpeed;
     [SerializeField] private float thurstSpeed;
-    // [SerializeField] private GameObject camera;
+    
+    [SerializeField] private ParticleSystem thurstParticles;
 
     private Rigidbody2D rb;
 
@@ -14,6 +15,9 @@ public class Controller : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        var isThursting = thurstParticles.emission;
+        isThursting.enabled = false;
     }
 
     // Update is called once per frame
@@ -32,14 +36,16 @@ public class Controller : MonoBehaviour
         {
             rb.angularVelocity = -turnDirection * turnSpeed;
         }
-        // rb.angularVelocity = -turnDirection * turnSpeed * Time.deltaTime;
-        // transform.Rotate(0, 0, -turnDirection * turnSpeed * Time.deltaTime);
 
-        // var impulse = (angularChangeInDegrees * Mathf.Deg2Rad) * body.inertia;
-
-        // body.AddTorque(impulse, ForceMode2D.Impulse);
-
-        // Move camera
-        // camera.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+        // Turn on/off particles
+        var isThursting = thurstParticles.emission;
+        if (Mathf.Abs(thurstOn) > 0.1f)
+        {
+            isThursting.enabled = true;
+        }
+        else
+        {
+            isThursting.enabled = false;
+        }
     }
 }
