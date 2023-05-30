@@ -6,6 +6,7 @@ public class Controller : MonoBehaviour
 {
     [SerializeField] private float turnSpeed;
     [SerializeField] private float thurstSpeed;
+    [SerializeField, Range(0,1)] private float friction;
     
     [SerializeField] private ParticleSystem thurstParticles;
 
@@ -35,6 +36,16 @@ public class Controller : MonoBehaviour
         else
         {
             rb.angularVelocity = -turnDirection * turnSpeed;
+        }
+
+        // Add friction
+        if (thurstOn == 0)
+        {
+            rb.velocity = rb.velocity * friction;
+        }
+        if (turnDirection == 0)
+        {
+            rb.angularVelocity = rb.angularVelocity * friction;
         }
 
         // Turn on/off particles

@@ -5334,6 +5334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnSpeed: 150
   thurstSpeed: 300
+  friction: 0.99
   thurstParticles: {fileID: 3028738102269276106}
 --- !u!114 &6217987219697015162
 MonoBehaviour:
