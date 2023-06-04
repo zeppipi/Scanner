@@ -5321,7 +5321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectRadius: 4
-  raycastDegree: 360
+  raycastDegree: 120
 --- !u!114 &688039486805101608
 MonoBehaviour:
   m_ObjectHideFlags: 0
