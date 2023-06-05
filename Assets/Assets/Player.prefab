@@ -5337,6 +5337,7 @@ MonoBehaviour:
   lineWidths: 0.2
   lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   detector: {fileID: 3065340027338782294}
+  offset: {x: 0, y: -0.35}
 --- !u!114 &6217987219697015167
 MonoBehaviour:
   m_ObjectHideFlags: 0

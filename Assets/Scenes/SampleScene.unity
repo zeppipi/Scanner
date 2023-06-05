@@ -592,7 +592,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPrefab: {fileID: 4688182735902419726, guid: 727e75433f8f0234290ebfd89b9ff30f, type: 3}
-  distance: 25
+  distance: 100
   caveGenerator: {fileID: 837068015}
 --- !u!114 &2079752350
 MonoBehaviour:

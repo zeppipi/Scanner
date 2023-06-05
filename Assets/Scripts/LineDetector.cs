@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class LineDetector : MonoBehaviour
 {
+    // Note: The raycasts isnt working properly when the player is right beside a wall
+
     [SerializeField] private float lineWidths = 1;
     [SerializeField] private Material lineMaterial;
     [SerializeField] private Detector detector;
+    [SerializeField] private Vector2 offset;
 
     private List<List<float>> circlePoints = new List<List<float>>();
     private int degreeStep;
@@ -62,19 +65,19 @@ public class LineDetector : MonoBehaviour
         {
             if (hitList[index].collider != null)
             {
-                float hitAndPlayerDist = Vector2.Distance(hitList[index].point, transform.position);
+                float hitAndPlayerDist = Vector2.Distance(hitList[index].point + offset, transform.position);
                 // This is a mess
-                if(hitAndPlayerDist > outerRadius)
+                if(hitAndPlayerDist < innerRadius)
                 {
-                    outerLineRenderer[(int) hitAngles[index] / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
+                    innerLineRenderer[(int) hitAngles[index] / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
                 }
-                else if(hitAndPlayerDist > middleRadius)
+                else if(hitAndPlayerDist < middleRadius)
                 {
                     middleLineRenderer[(int) hitAngles[index] / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
                 }
-                else if(hitAndPlayerDist > innerRadius)
+                else if(hitAndPlayerDist < outerRadius)
                 {
-                    innerLineRenderer[(int) hitAngles[index] / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
+                    outerLineRenderer[(int) hitAngles[index] / degreeStep].GetComponent<DetectCollider>().SetLocalActivation(true);
                 }
             }
             else
