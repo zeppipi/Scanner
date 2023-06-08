@@ -4826,13 +4826,15 @@ GameObject:
   - component: {fileID: 6217987219697015166}
   - component: {fileID: 7115901723288881330}
   - component: {fileID: 3065340027338782294}
-  - component: {fileID: 688039486805101608}
   - component: {fileID: 6217987219697015167}
   - component: {fileID: -9030228566010418314}
   - component: {fileID: 7751447138914976101}
   - component: {fileID: 7507330641749679007}
   - component: {fileID: 3416710795482224725}
   - component: {fileID: 4133224353571118744}
+  - component: {fileID: 8262079486747250166}
+  - component: {fileID: 1902620687131292765}
+  - component: {fileID: -3985141908027842802}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -5322,22 +5324,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectRadius: 4
   raycastDegree: 120
---- !u!114 &688039486805101608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6217987219697015136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a315eca05e26194096c17a0ab012942, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineWidths: 0.2
-  lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
-  detector: {fileID: 3065340027338782294}
-  offset: {x: 0, y: -0.35}
 --- !u!114 &6217987219697015167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10180,3 +10166,51 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.35}
   serializedVersion: 2
   m_Radius: 0.3
+--- !u!114 &8262079486747250166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217987219697015136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c238ca7ad66c5428a1971ae983d16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineWidths: 0.2
+  lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  detector: {fileID: 3065340027338782294}
+  detectorRadiusMultiplier: 1
+--- !u!114 &1902620687131292765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217987219697015136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c238ca7ad66c5428a1971ae983d16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineWidths: 0.2
+  lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  detector: {fileID: 3065340027338782294}
+  detectorRadiusMultiplier: 0.625
+--- !u!114 &-3985141908027842802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6217987219697015136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c238ca7ad66c5428a1971ae983d16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineWidths: 0.2
+  lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  detector: {fileID: 3065340027338782294}
+  detectorRadiusMultiplier: 0.25
