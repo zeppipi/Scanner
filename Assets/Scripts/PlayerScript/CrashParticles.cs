@@ -10,9 +10,9 @@ public class CrashParticles : MonoBehaviour
     [SerializeField] private ParticleSystem crashParticles;
 
     [SerializeField] private float crashRadius;     // The circle area where you would crash
-    [SerializeField] private Vector2 offSet;        // The offset of the crash area
 
     private ParticleSystem.EmissionModule crashParticlesEmission;
+    private ParticleSystem.ShapeModule crashParticlesShape;
     private int degreeStep;
     private int raycastDegree;
 
@@ -20,8 +20,18 @@ public class CrashParticles : MonoBehaviour
     private List<float> hitAngles;
     private List<List<float>> circlePoints = new List<List<float>>();
 
+    private Rigidbody2D rb;
+
     void Awake()
     {
+        // Get the rigidbody
+        rb = GetComponent<Rigidbody2D>();
+        
+        // Get 'detector' variables
+        raycastDegree = detector.getRaycastDegree();
+        degreeStep = 360 / raycastDegree;
+        circlePoints = GetCirclePoints(raycastDegree, crashRadius);
+        
         // Prepare the hitlist and hitangles
         hitList = new List<RaycastHit2D>();
         hitAngles = new List<float>();
@@ -29,6 +39,9 @@ public class CrashParticles : MonoBehaviour
         // Prepare the crash particles
         crashParticlesEmission = crashParticles.emission;
         crashParticlesEmission.enabled = false;
+
+        // Prepare the crash particles shape
+        crashParticlesShape = crashParticles.shape;
     }
 
     void Update() 
@@ -45,11 +58,11 @@ public class CrashParticles : MonoBehaviour
             {
                 // Find distance
                 Vector2 currentPoint = hitList[index].point;
-                currentPoint += offSet;
                 float hitAndPlayerDist = Vector2.Distance(currentPoint, transform.position);
 
-                if(hitAndPlayerDist <= crashRadius)
+                if(hitAndPlayerDist <= crashRadius && rb.velocity.magnitude > 0.1f)
                 {
+                    crashParticlesShape.position = new Vector3(circlePoints[index][0], circlePoints[index][1], 0);
                     inCrashArea = true;
                     break;
                 }

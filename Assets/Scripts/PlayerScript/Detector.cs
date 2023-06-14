@@ -6,6 +6,7 @@ public class Detector : MonoBehaviour
 {
     [SerializeField] private float detectRadius;
     [SerializeField] private int raycastDegree;
+    [SerializeField] private float lineRadius;
 
     private int degreeStep;
     private List<RaycastHit2D> hitList;    
@@ -53,5 +54,10 @@ public class Detector : MonoBehaviour
     public List<RaycastHit2D> getHitList()
     {
         return hitList;
+    }
+
+    public float getLineRadius()
+    {
+        return lineRadius;
     }
 }

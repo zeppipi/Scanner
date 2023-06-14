@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
+    [SerializeField] private float maxSpeed = 1f;
     [SerializeField] private float turnSpeed;
     [SerializeField] private float thurstSpeed;
     [SerializeField, Range(0,1)] private float friction;
+    [SerializeField, Range(0,1)] private float turnFriction;
     
     [SerializeField] private ParticleSystem thurstParticles;
 
@@ -24,9 +26,9 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float turnDirection = Input.GetAxis("Horizontal");
+        float turnDirection = Input.GetAxisRaw("Horizontal");
         float thurstOn = Input.GetAxis("Jump");
-
+        
         // Move player
         rb.AddForce(transform.up * thurstOn * thurstSpeed * Time.deltaTime);
         if (Mathf.Abs(rb.angularVelocity * -turnDirection) <= Mathf.Abs(turnSpeed * -turnDirection))
@@ -45,7 +47,7 @@ public class Controller : MonoBehaviour
         }
         if (turnDirection == 0)
         {
-            rb.angularVelocity = rb.angularVelocity * friction;
+            rb.angularVelocity = rb.angularVelocity * turnFriction;
         }
 
         // Turn on/off particles
@@ -58,5 +60,17 @@ public class Controller : MonoBehaviour
         {
             isThursting.enabled = false;
         }
+
+        // Limit speed
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+    }
+
+    // Getters
+    public float GetMaxSpeed()
+    {
+        return maxSpeed;
     }
 }

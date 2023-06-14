@@ -8,11 +8,13 @@ public class LineRendererScript : MonoBehaviour
     [SerializeField] private Material lineMaterial;
     [SerializeField] private Detector detector;
     [SerializeField] private float detectorRadiusMultiplier = 1;
+    [SerializeField] private float lineRadiusMultiplier = 1;
 
     // Variables from detector
     private int degreeStep;
     private int raycastDegree;
     private float detectRadius;
+    private float lineRadius;
     private List<RaycastHit2D> hitList;    
     private List<float> hitAngles;
 
@@ -32,9 +34,10 @@ public class LineRendererScript : MonoBehaviour
 
         // Get radius
         detectRadius = detector.getDetectRadius() * detectorRadiusMultiplier;
+        lineRadius = detector.getLineRadius() * lineRadiusMultiplier;
 
         // Get circle points
-        circlePoints = GetCirclePoints(raycastDegree, detectRadius);
+        circlePoints = GetCirclePoints(raycastDegree, lineRadius);
         isDetecting = new bool[circlePoints.Count];     // Note: isDetecting[-1] = isDetecting[0]
         
         // Start the array with 1
