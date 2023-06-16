@@ -8,7 +8,10 @@ public class DetectorSound : MonoBehaviour
     [SerializeField] private Detector detector;
     [SerializeField] private float minRadius;   // The smallest distance 
 
-    [SerializeField] private float beepPerSecond;
+    [SerializeField] private float lowBeepsPerSecond;
+    [SerializeField] private float highBeepsPerSecond;
+    private float lowTimeBetweenBeep;
+    private float highTimeBetweenBeep;
     private float currentTime;
     private bool isPlaying = false;
 
@@ -25,8 +28,10 @@ public class DetectorSound : MonoBehaviour
         hitList = detector.getHitList();
         detectRadius = detector.getDetectRadius();
 
-        // Prepare the 'beepPerSecond' variable
-        currentTime = beepPerSecond;
+        // Prepare the 'beepPerSecond' variables
+        lowTimeBetweenBeep = 1 / lowBeepsPerSecond;
+        highTimeBetweenBeep = 1 / highBeepsPerSecond;
+        currentTime = lowTimeBetweenBeep;
     }
 
     // Update is called once per frame
@@ -34,19 +39,6 @@ public class DetectorSound : MonoBehaviour
     {
         // Reset best distance
         bestDistance = 999f;
-
-        // Check if sound should play
-        if (isPlaying)
-        {
-            // Countdown
-            currentTime -= Time.deltaTime;
-
-            if(currentTime <= 0)
-            {
-                audioClip.Play();
-                currentTime = beepPerSecond;
-            }
-        }
         
         for (int index = 0; index < hitList.Count; index++)
         {   
@@ -60,6 +52,30 @@ public class DetectorSound : MonoBehaviour
                     bestDistance = distance;
                     currClosestHit = hitList[index];
                 }
+            }
+        }
+
+        // Make the beeps quiter when its far away
+        audioClip.volume = Mathf.Lerp(0.1f, 1f, (Mathf.InverseLerp(detectRadius, minRadius, bestDistance)));
+
+        // Pan the sound depending on the direction of the closest hit
+        if (currClosestHit.distance > 0 && currClosestHit.distance != 0)
+        {
+            audioClip.panStereo = Mathf.Lerp(1f, -1f, (Mathf.InverseLerp(-1f, 1f, currClosestHit.normal.x)));
+        }
+        
+        // Check if sound should play
+        if (isPlaying)
+        {
+            // Countdown
+            currentTime -= Time.deltaTime;
+
+            if(currentTime <= 0)
+            {
+                audioClip.Play();
+                
+                // Dynamically calculate how fast the beeps should play depending on the distance
+                currentTime = Mathf.Lerp(lowTimeBetweenBeep, highTimeBetweenBeep, (Mathf.InverseLerp(detectRadius, minRadius, bestDistance)));
             }
         }
 
